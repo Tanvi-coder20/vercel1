@@ -4,17 +4,20 @@ import json
 
 app = FastAPI()
 
-# Enable CORS
+# Enable CORS for all origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins
+    allow_origins=["*"],
     allow_methods=["GET"],
     allow_headers=["*"],
 )
 
-# Load the marks data (replace 'marks.json' with your filename)
+# Load marks data (array of objects)
 with open("marks.json") as f:
-    student_data = json.load(f)
+    data = json.load(f)
+
+# Convert list of dicts into dict for fast lookup
+student_data = {item["name"]: item["marks"] for item in data}
 
 @app.get("/api")
 async def get_marks(request: Request):
